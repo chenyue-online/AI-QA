@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>DeepSeek 智能提问器 · 一键生成指令</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+        }
+
+        body {
+            background: #f5f7fb;
+            margin: 0;
+            padding: 24px 16px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .container {
+            max-width: 1280px;
+            width: 100%;
+        }
+
+        h1 {
+            font-size: 2rem;
+            font-weight: 600;
+            color: #1e2b3c;
+            margin: 0 0 8px 0;
+            letter-spacing: -0.01em;
+        }
+
+        .subhead {
+            font-size: 1rem;
+            color: #2c3e50;
+            margin-bottom: 32px;
+            border-left: 4px solid #4f8ef7;
+            padding-left: 16px;
+            background: #eef2f9;
+            border-radius: 0 8px 8px 0;
+            line-height: 1.5;
+        }
+
+        .card {
+            background: #ffffff;
+            border-radius: 20px;
+            box-shadow: 0 8px 24px rgba(0, 34, 65, 0.08);
+            padding: 24px 20px;
+            margin-bottom: 36px;
+            border: 1px solid #e9eef2;
+        }
+
+        .card h2 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #0f1a2c;
+            margin-top: 0;
+            margin-bottom: 18px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border-bottom: 2px dashed #cdd9e9;
+            padding-bottom: 12px;
+            flex-wrap: wrap;
+        }
+
+        .card h2 span {
+            background: #1e2b3c;
+            color: white;
+            font-size: 0.9rem;
+            font-weight: 500;
+            padding: 4px 12px;
+            border-radius: 30px;
+            margin-left: 12px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            border-radius: 16px;
+            overflow: hidden;
+            font-size: 0.95rem;
+        }
+
+        th {
+            background-color: #1e2b3c;
+            color: white;
+            font-weight: 600;
+            text-align: left;
+            padding: 14px 16px;
+        }
+
+        td {
+            background-color: #ffffff;
+            padding: 12px 16px;
+            border-bottom: 1px solid #e9edf4;
+            vertical-align: top;
+        }
+
+        .striped tbody tr:nth-child(even) td {
+            background-color: #f8fafd;
+        }
+
+        /* 输入框样式 */
+        .smart-input {
+            width: 100%;
+            border: 1px solid #ccd7e6;
+            border-radius: 12px;
+            padding: 10px 12px;
+            font-size: 0.9rem;
+            font-family: inherit;
+            background-color: #fff;
+            transition: 0.2s;
+            resize: vertical;
+            line-height: 1.4;
+        }
+
+        .smart-input:focus {
+            outline: none;
+            border-color: #2b6ef0;
+            box-shadow: 0 0 0 3px rgba(43, 110, 240, 0.15);
+        }
+
+        /* 生成面板 */
+        .generate-panel {
+            background: #f8fafc;
+            border-radius: 20px;
+            padding: 20px;
+            margin-top: 20px;
+            border: 1px solid #dfe7f0;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 14px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+            align-items: center;
+        }
+
+        .btn {
+            background: #1e2b3c;
+            color: white;
+            border: none;
+            padding: 10px 24px;
+            border-radius: 40px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: #2b6ef0;
+            box-shadow: 0 2px 6px rgba(43, 110, 240, 0.3);
+        }
+
+        .btn-primary:hover {
+            background: #1e5ad9;
+            transform: translateY(-1px);
+        }
+
+        .btn-outline {
+            background: white;
+            color: #1e2b3c;
+            border: 1px solid #bdcbe0;
+        }
+
+        .btn-outline:hover {
+            background: #eef2f9;
+        }
+
+        .result-box {
+            background: #ffffff;
+            border-radius: 16px;
+            border: 1px solid #dce5ef;
+            padding: 18px 20px;
+            position: relative;
+        }
+
+        .result-text {
+            font-family: 'SF Mono', 'Fira Code', monospace;
+            font-size: 0.9rem;
+            white-space: pre-wrap;
+            word-break: break-word;
+            background: #fefefe;
+            padding: 12px;
+            border-radius: 12px;
+            border-left: 4px solid #2b6ef0;
+            margin: 0 0 12px 0;
+            max-height: 280px;
+            overflow-y: auto;
+        }
+
+        .copy-toast {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #1e2b3c;
+            color: white;
+            padding: 8px 20px;
+            border-radius: 40px;
+            font-size: 0.85rem;
+            z-index: 1000;
+            opacity: 0;
+            transition: opacity 0.2s;
+            pointer-events: none;
+        }
+
+        .template-preview {
+            background-color: #f9fcff;
+            border: 1px solid #dbe4f0;
+            border-radius: 14px;
+            padding: 12px 14px;
+            font-family: 'SF Mono', monospace;
+            font-size: 0.85rem;
+            line-height: 1.5;
+            color: #1e2b3c;
+        }
+
+        .badge {
+            background: #d4e1fa;
+            color: #1e2b3c;
+            font-weight: 500;
+            padding: 4px 10px;
+            border-radius: 30px;
+            font-size: 0.75rem;
+            display: inline-block;
+        }
+
+        .btn-sm {
+            background: #eef2f9;
+            border: none;
+            padding: 6px 14px;
+            border-radius: 30px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: 0.2s;
+            margin-top: 8px;
+        }
+
+        .btn-sm:hover {
+            background: #dee6f2;
+        }
+
+        .note {
+            background: #eef5ff;
+            border-radius: 12px;
+            padding: 10px 16px;
+            margin: 8px 0;
+            font-size: 0.9rem;
+            border-left: 3px solid #2b6ef0;
+        }
+
+        hr {
+            border: none;
+            border-top: 2px solid #d9e2ef;
+            margin: 20px 0;
+        }
+
+        .flex-between {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>🧠 DeepSeek 智能指令工坊</h1>
+    <div class="subhead">在下方表格「您的输入」列填写内容 → 点击「✨ 生成完整指令」→ 一键复制 → 粘贴到DeepSeek，精准回答！</div>
+
+    <!-- 核心指令要素表（带输入框） -->
+    <div class="card">
+        <h2>📌 核心指令要素表 <span>填写您的需求</span></h2>
+        <table class="striped" id="coreTable">
+            <thead>
+                <tr><th style="width:18%">指令类型</th><th style="width:22%">关键要素</th><th style="width:32%">填写示例</th><th style="width:28%">✍️ 您的输入</th></tr>
+            </thead>
+            <tbody>
+                <tr><td>角色设定</td><td>我希望你扮演的角色</td><td>资深金融分析师 / 育儿专家 / 编程导师</td><td><textarea class="smart-input" id="inputRole" rows="1" placeholder="例：资深营养师、心理咨询师..."></textarea></td></tr>
+                <tr><td>任务描述</td><td>具体要我做什么</td><td>分析这份数据 / 写一篇文章 / 解释概念</td><td><textarea class="smart-input" id="inputTask" rows="1" placeholder="例：设计一周健康食谱"></textarea></td></tr>
+                <tr><td>背景信息</td><td>相关的前情提要</td><td>我是初学者 / 面向儿童 / 用于工作报告</td><td><textarea class="smart-input" id="inputContext" rows="1" placeholder="例：30岁上班族，久坐，减脂，预算有限"></textarea></td></tr>
+                <tr><td>具体要求</td><td>格式/风格/限制条件</td><td>500字以内 / 分点说明 / 通俗易懂</td><td><textarea class="smart-input" id="inputSpec" rows="2" placeholder="例：中餐口味，烹饪时间短，每餐标注热量"></textarea></td></tr>
+                <tr><td>参考示例</td><td>希望模仿的风格（可选）</td><td>像这样写：……</td><td><textarea class="smart-input" id="inputExample" rows="1" placeholder="可选，留空则忽略"></textarea></td></tr>
+                <tr><td>输出格式</td><td>希望的结果形式</td><td>表格 / 思维导图 / 代码 / 普通文本</td><td><textarea class="smart-input" id="inputFormat" rows="1" placeholder="例：表格，含早中晚三餐+热量"></textarea></td></tr>
+            </tbody>
+        </table>
+
+        <!-- 生成 & 复制面板 -->
+        <div class="generate-panel">
+            <div class="btn-group">
+                <button class="btn btn-primary" id="generateBtn">✨ 生成完整指令</button>
+                <button class="btn btn-outline" id="copyBtn">📋 复制到剪贴板</button>
+                <button class="btn btn-outline" id="clearAllBtn">🗑️ 清空所有输入</button>
+            </div>
+            <div class="result-box">
+                <div style="font-weight: 500; margin-bottom: 8px; display: flex; gap: 12px; align-items: center;">
+                    <span>📄 整合后的Prompt（直接复制）</span>
+                    <span class="badge">可直接粘贴至DeepSeek</span>
+                </div>
+                <div id="resultPrompt" class="result-text">点击「生成完整指令」后，这里会显示组合好的文本...</div>
+            </div>
+        </div>
+        <div class="note">💡 <strong>小贴士：</strong> 下方六大模板区每个模板都有「填充指令表」按钮，点击即可将模板内容快速填入上方表格，再微调即可生成专属指令。</div>
+    </div>
+
+    <!-- 六大核心提问模板 (每个模板增加填充按钮) -->
+    <div class="card">
+        <h2>🧩 六大核心提问模板 <span>一键填充 + 自由修改</span></h2>
+        <table class="striped">
+            <thead><tr><th style="width:18%">模板类型</th><th>模板结构</th><th style="width:18%">快捷操作</th></tr></thead>
+            <tbody>
+                <tr>
+                    <td><span class="badge">分析类</span></td>
+                    <td><div class="template-preview" id="templateAnalysis">【角色】资深行业分析师<br>【任务】分析【某现象/数据】<br>【背景】我是【身份】，用于【用途】<br>【具体要求】从【角度1】、【角度2】、【角度3】分析<br>【输出格式】结论先行，分点阐述，最后给建议</div></td>
+                    <td><button class="btn-sm fill-template" data-template="analysis">📥 填充指令表</button></td>
+                </tr>
+                <tr>
+                    <td><span class="badge">创作类</span></td>
+                    <td><div class="template-preview" id="templateCreative">【角色】专业作家/营销文案高手<br>【任务】写一篇关于【主题】的【文章/文案】<br>【风格】幽默风趣/严肃专业/温暖感人<br>【字数】约【数字】字<br>【关键点】必须包含【要素1】、【要素2】</div></td>
+                    <td><button class="btn-sm fill-template" data-template="creative">📥 填充指令表</button></td>
+                </tr>
+                <tr>
+                    <td><span class="badge">学习类</span></td>
+                    <td><div class="template-preview" id="templateLearn">【角色】耐心细致的老师<br>【任务】讲解【某知识点】<br>【背景】我有【知识基础】，【年龄/职业】<br>【要求】从基础讲起/直接讲难点/结合案例<br>【检验方式】讲完后出3道测试题</div></td>
+                    <td><button class="btn-sm fill-template" data-template="learn">📥 填充指令表</button></td>
+                </tr>
+                <tr>
+                    <td><span class="badge">代码类</span></td>
+                    <td><div class="template-preview" id="templateCode">【角色】资深程序员<br>【任务】用【编程语言】实现【功能】<br>【环境】【操作系统/框架版本】<br>【约束】代码要【简洁/健壮/有注释】<br>【额外】需要解释关键逻辑</div></td>
+                    <td><button class="btn-sm fill-template" data-template="code">📥 填充指令表</button></td>
+                </tr>
+                <tr>
+                    <td><span class="badge">决策类</span></td>
+                    <td><div class="template-preview" id="templateDecision">【角色】理性客观的顾问<br>【任务】帮我决策【选项A】还是【选项B】<br>【背景】我的情况是【描述现状】<br>【考量因素】优先考虑【因素1】，其次【因素2】<br>【输出】列出利弊分析+推荐方案+理由</div></td>
+                    <td><button class="btn-sm fill-template" data-template="decision">📥 填充指令表</button></td>
+                </tr>
+                <tr>
+                    <td><span class="badge">总结类</span></td>
+                    <td><div class="template-preview" id="templateSummary">【角色】高效的信息整理专家<br>【任务】总结这篇文章/这份资料<br>【重点】提取核心观点+数据支撑+结论<br>【长度】浓缩成【数字】字以内<br>【格式】用【思维导图/要点列表】呈现</div></td>
+                    <td><button class="btn-sm fill-template" data-template="summary">📥 填充指令表</button></td>
+                </tr>
+            </tbody>
+        </table>
+        <div class="note">✨ <strong>填充说明：</strong> 点击「填充指令表」会将模板内容智能映射到上方表格的“您的输入”中，之后您可以自由编辑再生成最终指令。</div>
+    </div>
+
+    <!-- 进阶技巧卡片（保留参考） -->
+    <div class="card">
+        <h2>⚡ 进阶技巧 <span>让回答更惊艳</span></h2>
+        <table class="striped">
+            <thead><tr><th style="width:20%">技巧</th><th>作用</th><th>示例指令（可附加）</th></tr></thead>
+            <tbody>
+                <tr><td>思考链</td><td>让推理更清晰</td><td>“请用‘第一步……第二步……’的方式思考”</td></tr>
+                <tr><td>反面论证</td><td>获得更全面视角</td><td>“请同时说明可能存在的问题或反方观点”</td></tr>
+                <tr><td>多方案</td><td>获得多种可能性</td><td>“请给出3种不同解决方案，并对比优劣”</td></tr>
+                <tr><td>迭代优化</td><td>不断完善答案</td><td>“请根据我的反馈继续优化/调整上一版”</td></tr>
+            </tbody>
+        </table>
+        <div class="note">📍 可以在生成指令后，手动附加以上技巧至文本框末尾，效果更佳。</div>
+    </div>
+
+    <div class="footnote" style="background:#f0f4fa; border-radius: 20px; padding: 18px; margin-top: 12px;">
+        <strong>🎯 使用流程：</strong> ① 在顶部表格填写你的需求（或点击下方模板快速填充）→ ② 点击「生成完整指令」→ ③ 点击「复制到剪贴板」→ ④ 粘贴到DeepSeek对话框，发送即可。
+    </div>
+</div>
+
+<div id="toast" class="copy-toast">✅ 已复制到剪贴板！</div>
+
+<script>
+    (function() {
+        // DOM 元素
+        const roleInput = document.getElementById('inputRole');
+        const taskInput = document.getElementById('inputTask');
+        const contextInput = document.getElementById('inputContext');
+        const specInput = document.getElementById('inputSpec');
+        const exampleInput = document.getElementById('inputExample');
+        const formatInput = document.getElementById('inputFormat');
+        const generateBtn = document.getElementById('generateBtn');
+        const copyBtn = document.getElementById('copyBtn');
+        const clearBtn = document.getElementById('clearAllBtn');
+        const resultDiv = document.getElementById('resultPrompt');
+
+        // 显示toast
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            toast.textContent = msg || '✅ 已复制到剪贴板！';
+            toast.style.opacity = '1';
+            setTimeout(() => {
+                toast.style.opacity = '0';
+            }, 2000);
+        }
+
+        // 生成指令文本
+        function generatePrompt() {
+            let parts = [];
+            const role = roleInput.value.trim();
+            const task = taskInput.value.trim();
+            const context = contextInput.value.trim();
+            const spec = specInput.value.trim();
+            const example = exampleInput.value.trim();
+            const format = formatInput.value.trim();
+
+            if (role) parts.push(`【角色设定】${role}`);
+            if (task) parts.push(`【任务描述】${task}`);
+            if (context) parts.push(`【背景信息】${context}`);
+            if (spec) parts.push(`【具体要求】${spec}`);
+            if (example) parts.push(`【参考示例】${example}`);
+            if (format) parts.push(`【输出格式】${format}`);
+            
+            if (parts.length === 0) return "⚠️ 请至少填写一项「您的输入」，以便生成精准指令。";
+            
+            // 添加一句友好的开头 (可选)
+            let prompt = parts.join('\n\n');
+            return prompt;
+        }
+
+        // 更新结果区
+        function updateResult() {
+            const prompt = generatePrompt();
+            resultDiv.innerText = prompt;
+        }
+
+        // 复制结果
+        function copyToClipboard() {
+            const text = resultDiv.innerText;
+            if (!text || text.includes("请至少填写一项")) {
+                showToast("没有可复制的内容，请先生成指令");
+                return;
+            }
+            navigator.clipboard.writeText(text).then(() => {
+                showToast("✨ 指令已复制，快去粘贴给DeepSeek吧！");
+            }).catch(() => {
+                alert("复制失败，可手动选中复制");
+            });
+        }
+
+        // 清空所有输入框
+        function clearAllInputs() {
+            roleInput.value = '';
+            taskInput.value = '';
+            contextInput.value = '';
+            specInput.value = '';
+            exampleInput.value = '';
+            formatInput.value = '';
+            updateResult();
+            showToast("已清空所有输入");
+        }
+
+        // 智能解析模板文本并填充到表格 (增强版)
+        function fillFromTemplate(templateText) {
+            // 定义字段映射规则 (模板标签 -> 对应输入框)
+            const mapping = [
+                { pattern: /【角色[：]?\s*(.*?)(?=\n【|$)/gs, target: roleInput },
+                { pattern: /【任务[：]?\s*(.*?)(?=\n【|$)/gs, target: taskInput },
+                { pattern: /【背景[：]?\s*(.*?)(?=\n【|$)/gs, target: contextInput },
+                { pattern: /【具体要求[：]?\s*(.*?)(?=\n【|$)/gs, target: specInput },
+                { pattern: /【要求[：]?\s*(.*?)(?=\n【|$)/gs, target: specInput },    // 兼容学习类“要求”
+                { pattern: /【风格[：]?\s*(.*?)(?=\n【|$)/gs, target: specInput },    // 创作类风格合并到具体要求
+                { pattern: /【关键点[：]?\s*(.*?)(?=\n【|$)/gs, target: specInput },
+                { pattern: /【约束[：]?\s*(.*?)(?=\n【|$)/gs, target: specInput },
+                { pattern: /【考量因素[：]?\s*(.*?)(?=\n【|$)/gs, target: specInput },
+                { pattern: /【输出[：]?\s*(.*?)(?=\n【|$)/gs, target: formatInput },  // 输出格式兼容
+                { pattern: /【输出格式[：]?\s*(.*?)(?=\n【|$)/gs, target: formatInput },
+                { pattern: /【格式[：]?\s*(.*?)(?=\n【|$)/gs, target: formatInput },
+                { pattern: /【参考示例[：]?\s*(.*?)(?=\n【|$)/gs, target: exampleInput },
+                { pattern: /【长度[：]?\s*(.*?)(?=\n【|$)/gs, target: specInput },     // 长度也属于具体要求
+                { pattern: /【字数[：]?\s*(.*?)(?=\n【|$)/gs, target: specInput },
+                { pattern: /【环境[：]?\s*(.*?)(?=\n【|$)/gs, target: contextInput },  // 代码环境合并至背景
+                { pattern: /【检验方式[：]?\s*(.*?)(?=\n【|$)/gs, target: specInput }
+            ];
+
+            // 先清空相关字段，但保留其他原有内容？为了体验，不清空，而是追加？但用户期望填充模板，一般会覆盖主要字段
+            // 为了不冲突，只对映射匹配到的字段进行覆盖（如果匹配成功就替换输入框的值）
+            // 但背景信息可能有多个来源，采用累加逻辑会乱，干脆按映射覆盖。
+            // 注意：多个pattern可能匹配到同一个target，应该让后匹配的覆盖，但一般不同时出现。
+            let filled = false;
+            for (let map of mapping) {
+                let match = map.pattern.exec(templateText);
+                if (match && match[1]) {
+                    let val = match[1].trim();
+                    if (val) {
+                        map.target.value = val;
+                        filled = true;
+                    }
+                }
+                // 重置正则的lastIndex，避免干扰
+                map.pattern.lastIndex = 0;
+            }
+            // 额外处理一些特殊组合：若背景未匹配到但可能有多个段落，增加通用提取
+            if (!contextInput.value.trim()) {
+                // 尝试匹配【背景】标签以外的额外信息
+                let bgMatch = templateText.match(/【背景[：]?\s*([\s\S]*?)(?=\n【|$)/);
+                if (bgMatch && bgMatch[1]) contextInput.value = bgMatch[1].trim();
+            }
+            // 如果具体要求还是空，尝试抓取“从xxx角度”之类的所有剩余描述
+            if (!specInput.value.trim()) {
+                let lines = templateText.split('\n');
+                let rest = [];
+                for (let line of lines) {
+                    if (line.includes('【') && !line.includes('【角色') && !line.includes('【任务') && !line.includes('【背景')) {
+                        let clean = line.replace(/【.*?】/, '').trim();
+                        if (clean) rest.push(clean);
+                    }
+                }
+                if (rest.length) specInput.value = rest.join('；');
+            }
+            if (filled) {
+                updateResult();
+                showToast("✅ 已根据模板填充表格，请按需微调后再生成指令");
+            } else {
+                showToast("未能自动解析模板，您可以手动复制模板内容到输入框");
+            }
+        }
+
+        // 绑定各个模板填充按钮
+        const templateBtns = document.querySelectorAll('.fill-template');
+        const templatesMap = {
+            analysis: document.getElementById('templateAnalysis')?.innerText || '',
+            creative: document.getElementById('templateCreative')?.innerText || '',
+            learn: document.getElementById('templateLearn')?.innerText || '',
+            code: document.getElementById('templateCode')?.innerText || '',
+            decision: document.getElementById('templateDecision')?.innerText || '',
+            summary: document.getElementById('templateSummary')?.innerText || ''
+        };
+
+        templateBtns.forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const key = btn.getAttribute('data-template');
+                if (key && templatesMap[key]) {
+                    fillFromTemplate(templatesMap[key]);
+                } else {
+                    showToast("模板加载错误");
+                }
+            });
+        });
+
+        // 绑定生成按钮事件
+        generateBtn.addEventListener('click', () => {
+            updateResult();
+            showToast("指令已生成，可点击复制按钮");
+        });
+        copyBtn.addEventListener('click', copyToClipboard);
+        clearBtn.addEventListener('click', clearAllInputs);
+        
+        // 初始化时显示空白提示，但可以展示默认示例内容（可选，不填任何内容）
+        resultDiv.innerText = "👈 填写上方表格，然后点击「生成完整指令」";
+        
+        // 如果用户修改任何一个输入框，可以自动更新预览？但为避免频繁，手动点击生成更好
+        // 可选：为每个输入框添加事件自动更新（为了更友好）
+        const allInputs = [roleInput, taskInput, contextInput, specInput, exampleInput, formatInput];
+        allInputs.forEach(inp => {
+            inp.addEventListener('input', () => {
+                // 实时预览更新（可选），但不自动生成，只显示当前模板状态？
+                // 为了不增加干扰，只更新结果文本，但是不自动复制，用防抖
+                if (generateBtn) {
+                    // 轻量实时预览，但也可以注释，提高性能，但很好用
+                    const promptPreview = generatePrompt();
+                    if (promptPreview !== resultDiv.innerText) {
+                        resultDiv.innerText = promptPreview;
+                    }
+                }
+            });
+        });
+        // 初始调用一次让结果有合理提示
+        updateResult();
+    })();
+</script>
+</body>
+</html>
