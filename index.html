@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>DeepSeek 智能指令工坊 · 最终修复版</title>
+    <title>DeepSeek 智能指令工坊 · 汽车行业专版</title>
     <style>
         * {
             box-sizing: border-box;
@@ -354,7 +354,7 @@
 </head>
 <body>
 <div class="container">
-    <h1>🧠 DeepSeek 智能指令工坊 · 最终修复版</h1>
+    <h1>🧠 DeepSeek 智能指令工坊 · 汽车行业专版</h1>
     <div class="subhead">先选择模板类型与角色，一键填充表格 → 勾选所需原则 → 生成并复制精准指令，让回答更自然、可信。</div>
 
     <!-- 核心指令要素表（带输入框） -->
@@ -374,19 +374,15 @@
             </tbody>
         </table>
 
-        <!-- 新增原则可选区 -->
+        <!-- 原则可选区 -->
         <div class="principles-area">
             <div class="principles-title">
                 🎯 回答质量增强原则（可选）
                 <span class="badge" style="background:#f5e2b8; color:#b45f06;">勾选后自动追加到指令末尾</span>
             </div>
             <div class="checkbox-group">
-                <label class="checkbox-item">
-                    <input type="checkbox" id="humanizeCheckbox"> ✍️ 去AI化 · 让回答像真人
-                </label>
-                <label class="checkbox-item">
-                    <input type="checkbox" id="truthCheckbox"> 🔍 真实性保障 · 拒绝幻觉
-                </label>
+                <label class="checkbox-item"><input type="checkbox" id="humanizeCheckbox"> ✍️ 去AI化 · 让回答像真人</label>
+                <label class="checkbox-item"><input type="checkbox" id="truthCheckbox"> 🔍 真实性保障 · 拒绝幻觉</label>
             </div>
             <div class="note" style="background:#fff3df; margin-top:12px;">
                 💡 <strong>原则说明：</strong><br>
@@ -464,6 +460,15 @@
     // ----------------------------- 角色数据库（模板类型 -> 角色列表）--------------------------------
     const roleDatabase = {
         "分析类": [
+            // 新增汽车行业角色，置于最前
+            { 
+                name: "汽车产品销售经理", 
+                template: `【角色设定】资深汽车产品销售经理，拥有5年以上一线销售与市场分析经验，擅长竞品对标、区域策略及客户洞察\n【任务描述】分析【某车型/某区域市场】的销售表现与市场机会\n【背景信息】目标车型：【车型】，竞品车型：【竞品】，销售数据周期：【季度/年度】，区域：【华东/华南/全国】\n【具体要求】从销量趋势、竞品对比、客户画像、区域差异、促销效果五个维度深度剖析，指出问题与改进方向，给出可落地的销售策略\n【输出格式】先给出核心结论（3点以内），再分维度阐述，最后附上具体行动建议` 
+            },
+            { 
+                name: "汽车总装工艺工程师", 
+                template: `【角色设定】资深汽车总装工艺工程师，精通总装车间工艺流程、工装设备及质量问题诊断，拥有8年以上现场经验\n【任务描述】分析并解决【总装过程中出现的具体故障/问题】\n【背景信息】车型：【车型】，故障现象：【详细描述】，发生工位：【工位】，频次：【单发/多发/批量】\n【具体要求】从人机料法环五个角度排查原因，给出短期遏制措施和长期工艺优化方案，需包含关键控制点及验证方法\n【输出格式】问题描述 → 原因分析（鱼骨图列表形式） → 临时对策 → 永久改善措施 → 效果验证建议` 
+            },
             { name: "资深金融分析师", template: `【角色设定】资深金融分析师，拥有10年投行与资产管理经验\n【任务描述】分析【具体金融产品或市场趋势】\n【背景信息】用户身份：【机构投资者/个人投资者】，关注【风险与收益平衡】\n【具体要求】从宏观经济指标、行业竞争格局、企业财务数据三个维度深度剖析，提供风险评估和未来3-6个月的投资建议\n【输出格式】先给出核心结论，再分点阐述逻辑，最后附上风险提示与操作策略` },
             { name: "市场调研专家", template: `【角色设定】资深市场调研专家，精通消费者行为分析与数据洞察\n【任务描述】针对【目标产品/服务】进行市场可行性分析\n【背景信息】目标市场：【地域/人群】，主要竞争对手：【竞品名称】\n【具体要求】从市场规模、用户痛点、竞品差异化、增长潜力四个方面展开，附SWOT分析\n【输出格式】数据可视化建议 + 结构化报告框架（摘要、发现、建议）` },
             { name: "数据科学家", template: `【角色设定】数据科学家，擅长机器学习与统计分析\n【任务描述】对【数据集/业务问题】建立分析模型或给出数据驱动建议\n【背景信息】数据字段包含：【关键字段】；业务目标：【提升指标】\n【具体要求】说明特征工程、模型选择、评估指标，并解释业务落地价值\n【输出格式】分析步骤+代码结构伪代码+结论与部署建议` }
@@ -573,7 +578,7 @@
             const match = map.pattern.exec(templateText);
             if (match && match[1]) {
                 let val = match[1].trim();
-                // 清理开头多余的】符号（防止模板中出现如“】资深...”）
+                // 清理开头多余的】符号
                 val = val.replace(/^】+/, '').trim();
                 if (val) map.target.value = val;
             }
