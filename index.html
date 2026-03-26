@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>DeepSeek 智能指令工坊 · 角色模板版</title>
+    <title>DeepSeek 智能指令工坊 · 最终修复版</title>
     <style>
         * {
             box-sizing: border-box;
@@ -312,19 +312,57 @@
             align-items: center;
             flex-wrap: wrap;
         }
+
+        .principles-area {
+            background: #fef7e0;
+            border-radius: 18px;
+            padding: 18px 20px;
+            margin: 20px 0 12px 0;
+            border: 1px solid #f5e2b8;
+        }
+
+        .principles-title {
+            font-weight: 700;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #b45f06;
+        }
+
+        .checkbox-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 28px;
+            align-items: center;
+        }
+
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            font-size: 0.95rem;
+        }
+
+        .checkbox-item input {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
 <div class="container">
-    <h1>🧠 DeepSeek 智能指令工坊 · 角色模板版</h1>
-    <div class="subhead">先选择「模板类型」与「专属角色」→ 预览角色预设模板 → 点击「填充指令表」→ 微调上方表格 → 生成并复制，即可获得精准回答。</div>
+    <h1>🧠 DeepSeek 智能指令工坊 · 最终修复版</h1>
+    <div class="subhead">先选择模板类型与角色，一键填充表格 → 勾选所需原则 → 生成并复制精准指令，让回答更自然、可信。</div>
 
     <!-- 核心指令要素表（带输入框） -->
     <div class="card">
         <h2>📌 核心指令要素表 <span>填写您的需求</span></h2>
         <table class="striped" id="coreTable">
             <thead>
-                <tr><th style="width:18%">指令类型</th><th style="width:22%">关键要素</th><th style="width:32%">填写示例</th><th style="width:28%">✍️ 您的输入</th> </tr>
+                <tr><th style="width:18%">指令类型</th><th style="width:22%">关键要素</th><th style="width:32%">填写示例</th><th style="width:28%">✍️ 您的输入</th>   </tr>
             </thead>
             <tbody>
                 <tr><td>角色设定</td><td>我希望你扮演的角色</td><td>资深金融分析师 / 育儿专家 / 编程导师</td><td><textarea class="smart-input" id="inputRole" rows="1" placeholder="例：资深营养师、心理咨询师..."></textarea></td></tr>
@@ -335,6 +373,27 @@
                 <tr><td>输出格式</td><td>希望的结果形式</td><td>表格 / 思维导图 / 代码 / 普通文本</td><td><textarea class="smart-input" id="inputFormat" rows="1" placeholder="例：表格，含早中晚三餐+热量"></textarea></td></tr>
             </tbody>
         </table>
+
+        <!-- 新增原则可选区 -->
+        <div class="principles-area">
+            <div class="principles-title">
+                🎯 回答质量增强原则（可选）
+                <span class="badge" style="background:#f5e2b8; color:#b45f06;">勾选后自动追加到指令末尾</span>
+            </div>
+            <div class="checkbox-group">
+                <label class="checkbox-item">
+                    <input type="checkbox" id="humanizeCheckbox"> ✍️ 去AI化 · 让回答像真人
+                </label>
+                <label class="checkbox-item">
+                    <input type="checkbox" id="truthCheckbox"> 🔍 真实性保障 · 拒绝幻觉
+                </label>
+            </div>
+            <div class="note" style="background:#fff3df; margin-top:12px;">
+                💡 <strong>原则说明：</strong><br>
+                • <strong>去AI化：</strong> 避免机械模板、官腔套话，使用自然口语、个人视角、生活化案例，让回答像资深专家在面对面交流。<br>
+                • <strong>真实性保障：</strong> 要求基于可靠来源、明确区分事实与推测，对不确定信息如实说明，避免编造数据或案例。
+            </div>
+        </div>
 
         <!-- 生成 & 复制面板 -->
         <div class="generate-panel">
@@ -351,7 +410,7 @@
                 <div id="resultPrompt" class="result-text">点击「生成完整指令」后，这里会显示组合好的文本...</div>
             </div>
         </div>
-        <div class="note">💡 <strong>小贴士：</strong> 下方选择模板和角色，点击「填充指令表」即可将专家级预设内容快速填入上方表格，再微调具体细节。</div>
+        <div class="note">💡 <strong>小贴士：</strong> 下方选择模板和角色，点击「一键填充至上方表格」即可将专家级预设内容快速填入上方表格，再微调具体细节。勾选原则后生成指令更智能。</div>
     </div>
 
     <!-- 角色模板选择区（双下拉框 + 预览） -->
@@ -379,7 +438,7 @@
         <div class="note">✨ 每个角色都经过深度优化，预设了【角色设定】【任务描述】【背景信息】【具体要求】【输出格式】等关键字段，填充后可自由修改细节。</div>
     </div>
 
-    <!-- 进阶技巧卡片（保留参考） -->
+    <!-- 进阶技巧卡片 -->
     <div class="card">
         <h2>⚡ 进阶技巧 <span>让回答更惊艳</span></h2>
         <table class="striped">
@@ -395,7 +454,7 @@
     </div>
 
     <div class="footnote" style="background:#f0f4fa; border-radius: 20px; padding: 18px; margin-top: 12px;">
-        <strong>🎯 使用流程：</strong> ① 选择模板类型 + 角色 → ② 点击「一键填充至上方表格」→ ③ 在表格中微调细节 → ④ 点击「生成完整指令」→ ⑤ 复制后粘贴到DeepSeek，精准高效！
+        <strong>🎯 使用流程：</strong> ① 选择模板类型 + 角色 → ② 点击「一键填充至上方表格」→ ③ 在表格中微调细节 → ④ 勾选「去AI化」/「真实性保障」→ ⑤ 点击「生成完整指令」→ ⑥ 复制后粘贴到DeepSeek，精准高效！
     </div>
 </div>
 
@@ -405,160 +464,34 @@
     // ----------------------------- 角色数据库（模板类型 -> 角色列表）--------------------------------
     const roleDatabase = {
         "分析类": [
-            {
-                name: "资深金融分析师",
-                template: `【角色设定】资深金融分析师，拥有10年投行与资产管理经验
-【任务描述】分析【具体金融产品或市场趋势】
-【背景信息】用户身份：【机构投资者/个人投资者】，关注【风险与收益平衡】
-【具体要求】从宏观经济指标、行业竞争格局、企业财务数据三个维度深度剖析，提供风险评估和未来3-6个月的投资建议
-【输出格式】先给出核心结论，再分点阐述逻辑，最后附上风险提示与操作策略`
-            },
-            {
-                name: "市场调研专家",
-                template: `【角色设定】资深市场调研专家，精通消费者行为分析与数据洞察
-【任务描述】针对【目标产品/服务】进行市场可行性分析
-【背景信息】目标市场：【地域/人群】，主要竞争对手：【竞品名称】
-【具体要求】从市场规模、用户痛点、竞品差异化、增长潜力四个方面展开，附SWOT分析
-【输出格式】数据可视化建议 + 结构化报告框架（摘要、发现、建议）`
-            },
-            {
-                name: "数据科学家",
-                template: `【角色设定】数据科学家，擅长机器学习与统计分析
-【任务描述】对【数据集/业务问题】建立分析模型或给出数据驱动建议
-【背景信息】数据字段包含：【关键字段】；业务目标：【提升指标】
-【具体要求】说明特征工程、模型选择、评估指标，并解释业务落地价值
-【输出格式】分析步骤+代码结构伪代码+结论与部署建议`
-            }
+            { name: "资深金融分析师", template: `【角色设定】资深金融分析师，拥有10年投行与资产管理经验\n【任务描述】分析【具体金融产品或市场趋势】\n【背景信息】用户身份：【机构投资者/个人投资者】，关注【风险与收益平衡】\n【具体要求】从宏观经济指标、行业竞争格局、企业财务数据三个维度深度剖析，提供风险评估和未来3-6个月的投资建议\n【输出格式】先给出核心结论，再分点阐述逻辑，最后附上风险提示与操作策略` },
+            { name: "市场调研专家", template: `【角色设定】资深市场调研专家，精通消费者行为分析与数据洞察\n【任务描述】针对【目标产品/服务】进行市场可行性分析\n【背景信息】目标市场：【地域/人群】，主要竞争对手：【竞品名称】\n【具体要求】从市场规模、用户痛点、竞品差异化、增长潜力四个方面展开，附SWOT分析\n【输出格式】数据可视化建议 + 结构化报告框架（摘要、发现、建议）` },
+            { name: "数据科学家", template: `【角色设定】数据科学家，擅长机器学习与统计分析\n【任务描述】对【数据集/业务问题】建立分析模型或给出数据驱动建议\n【背景信息】数据字段包含：【关键字段】；业务目标：【提升指标】\n【具体要求】说明特征工程、模型选择、评估指标，并解释业务落地价值\n【输出格式】分析步骤+代码结构伪代码+结论与部署建议` }
         ],
         "创作类": [
-            {
-                name: "小说家",
-                template: `【角色设定】获奖小说家，擅长细腻描写与情节构造
-【任务描述】创作一篇【短篇小说/故事章节】，主题为【核心主题】
-【背景信息】故事风格：【悬疑/浪漫/科幻】，读者群体：【年龄段】
-【具体要求】开篇有悬念，人物形象立体，结局出人意料，字数控制在【800-1500】字
-【输出格式】分章节或连续叙事，附上故事梗概`
-            },
-            {
-                name: "营销文案专家",
-                template: `【角色设定】顶级营销文案专家，熟悉社交媒体与品牌转化
-【任务描述】为【产品/服务】撰写推广文案
-【背景信息】目标平台：【小红书/抖音/公众号】，目标人群：【Z世代/职场人】
-【具体要求】突出痛点，制造情绪共鸣，包含CTA（行动号召），风格活泼有网感
-【输出格式】提供3个不同角度的标题 + 正文（含emoji，分段清晰）`
-            },
-            {
-                name: "广告创意总监",
-                template: `【角色设定】4A广告公司创意总监
-【任务描述】构思【品牌】的全新广告战役（campaign）
-【背景信息】品牌调性：【年轻化/高端/环保】，核心卖点：【卖点】
-【具体要求】包含slogan、视频脚本大纲、平面视觉概念、互动策略
-【输出格式】创意简报形式：背景、核心创意、执行方案`
-            }
+            { name: "小说家", template: `【角色设定】获奖小说家，擅长细腻描写与情节构造\n【任务描述】创作一篇【短篇小说/故事章节】，主题为【核心主题】\n【背景信息】故事风格：【悬疑/浪漫/科幻】，读者群体：【年龄段】\n【具体要求】开篇有悬念，人物形象立体，结局出人意料，字数控制在【800-1500】字\n【输出格式】分章节或连续叙事，附上故事梗概` },
+            { name: "营销文案专家", template: `【角色设定】顶级营销文案专家，熟悉社交媒体与品牌转化\n【任务描述】为【产品/服务】撰写推广文案\n【背景信息】目标平台：【小红书/抖音/公众号】，目标人群：【Z世代/职场人】\n【具体要求】突出痛点，制造情绪共鸣，包含CTA（行动号召），风格活泼有网感\n【输出格式】提供3个不同角度的标题 + 正文（含emoji，分段清晰）` },
+            { name: "广告创意总监", template: `【角色设定】4A广告公司创意总监\n【任务描述】构思【品牌】的全新广告战役（campaign）\n【背景信息】品牌调性：【年轻化/高端/环保】，核心卖点：【卖点】\n【具体要求】包含slogan、视频脚本大纲、平面视觉概念、互动策略\n【输出格式】创意简报形式：背景、核心创意、执行方案` }
         ],
         "学习类": [
-            {
-                name: "学科教师",
-                template: `【角色设定】资深学科教师（【科目】）
-【任务描述】讲解【知识点】，帮助学生理解
-【背景信息】学生年级：【年级】，已有基础：【描述】
-【具体要求】用生活化案例+类比，分步骤讲解，避免术语堆砌，末尾附3道巩固练习题
-【输出格式】概念解释 → 案例拆解 → 易错点提醒 → 练习题`
-            },
-            {
-                name: "语言教练",
-                template: `【角色设定】专业语言教练（【英语/日语等】）
-【任务描述】帮助提升【口语/写作/语法】能力
-【背景信息】学员当前水平：【初级/中级】，学习目标：【通过考试/日常交流】
-【具体要求】设计互动练习，纠正常见错误，提供地道表达库
-【输出格式】学习计划表 + 场景对话示例 + 发音/语法贴士`
-            },
-            {
-                name: "技能导师",
-                template: `【角色设定】技能导师（【编程/设计/乐器】）
-【任务描述】教授【具体技能】从入门到实践
-【背景信息】学员时间：【每周X小时】，设备环境：【描述】
-【具体要求】项目制学习，每阶段产出可展示作品，提供资源推荐
-【输出格式】分周学习路径 + 关键知识点清单 + 实操练习`
-            }
+            { name: "学科教师", template: `【角色设定】资深学科教师（【科目】）\n【任务描述】讲解【知识点】，帮助学生理解\n【背景信息】学生年级：【年级】，已有基础：【描述】\n【具体要求】用生活化案例+类比，分步骤讲解，避免术语堆砌，末尾附3道巩固练习题\n【输出格式】概念解释 → 案例拆解 → 易错点提醒 → 练习题` },
+            { name: "语言教练", template: `【角色设定】专业语言教练（【英语/日语等】）\n【任务描述】帮助提升【口语/写作/语法】能力\n【背景信息】学员当前水平：【初级/中级】，学习目标：【通过考试/日常交流】\n【具体要求】设计互动练习，纠正常见错误，提供地道表达库\n【输出格式】学习计划表 + 场景对话示例 + 发音/语法贴士` },
+            { name: "技能导师", template: `【角色设定】技能导师（【编程/设计/乐器】）\n【任务描述】教授【具体技能】从入门到实践\n【背景信息】学员时间：【每周X小时】，设备环境：【描述】\n【具体要求】项目制学习，每阶段产出可展示作品，提供资源推荐\n【输出格式】分周学习路径 + 关键知识点清单 + 实操练习` }
         ],
         "代码类": [
-            {
-                name: "全栈工程师",
-                template: `【角色设定】全栈开发工程师，精通前后端与数据库
-【任务描述】实现【具体功能模块/小应用】
-【背景信息】技术栈：【React/Node.js/Python】；运行环境：【浏览器/服务器】
-【具体要求】代码需包含错误处理、注释，并提供可运行的示例，遵循最佳实践
-【输出格式】完整代码块 + 依赖安装说明 + 关键逻辑解释`
-            },
-            {
-                name: "算法专家",
-                template: `【角色设定】算法竞赛教练/资深算法工程师
-【任务描述】解决【算法问题/数据结构设计】
-【背景信息】复杂度要求：【时间复杂度/空间复杂度】；输入规模：【范围】
-【具体要求】给出最优解思路，复杂度分析，提供多种解法对比
-【输出格式】思路推导 → 伪代码 → 可运行代码（语言自选）→ 测试用例`
-            },
-            {
-                name: "DevOps工程师",
-                template: `【角色设定】DevOps专家，熟悉CI/CD与容器化
-【任务描述】设计【项目】的自动化部署与监控方案
-【背景信息】现有架构：【微服务/单体】；云平台：【AWS/自建】
-【具体要求】包含Dockerfile、K8s配置、CI流水线脚本、日志监控建议
-【输出格式】配置文件示例 + 架构图描述 + 操作步骤`
-            }
+            { name: "全栈工程师", template: `【角色设定】全栈开发工程师，精通前后端与数据库\n【任务描述】实现【具体功能模块/小应用】\n【背景信息】技术栈：【React/Node.js/Python】；运行环境：【浏览器/服务器】\n【具体要求】代码需包含错误处理、注释，并提供可运行的示例，遵循最佳实践\n【输出格式】完整代码块 + 依赖安装说明 + 关键逻辑解释` },
+            { name: "算法专家", template: `【角色设定】算法竞赛教练/资深算法工程师\n【任务描述】解决【算法问题/数据结构设计】\n【背景信息】复杂度要求：【时间复杂度/空间复杂度】；输入规模：【范围】\n【具体要求】给出最优解思路，复杂度分析，提供多种解法对比\n【输出格式】思路推导 → 伪代码 → 可运行代码（语言自选）→ 测试用例` },
+            { name: "DevOps工程师", template: `【角色设定】DevOps专家，熟悉CI/CD与容器化\n【任务描述】设计【项目】的自动化部署与监控方案\n【背景信息】现有架构：【微服务/单体】；云平台：【AWS/自建】\n【具体要求】包含Dockerfile、K8s配置、CI流水线脚本、日志监控建议\n【输出格式】配置文件示例 + 架构图描述 + 操作步骤` }
         ],
         "决策类": [
-            {
-                name: "商业顾问",
-                template: `【角色设定】麦肯锡风格商业顾问
-【任务描述】帮助决策【战略选择A vs B】
-【背景信息】公司所处行业：【行业】，核心资源：【资源】，短期目标：【目标】
-【具体要求】运用MECE原则，从财务、市场、运营、风险四个维度评分，给出量化建议
-【输出格式】决策矩阵 + 利弊分析 + 实施路线图`
-            },
-            {
-                name: "人生规划师",
-                template: `【角色设定】人生规划/职业规划导师
-【任务描述】帮助选择【职业方向/重大人生决策】
-【背景信息】用户性格：【INTP/外向】；技能树：【技能】；顾虑：【顾虑点】
-【具体要求】结合价值观、能力、市场趋势，提供短期行动清单和长期愿景
-【输出格式】决策框架（SWOT+价值观排序） + 分阶段执行建议`
-            },
-            {
-                name: "产品经理",
-                template: `【角色设定】资深产品经理，擅长需求分析与产品决策
-【任务描述】决定【功能A还是功能B】优先开发
-【背景信息】用户反馈：【反馈摘要】；开发资源：【工时限制】；商业价值：【预期】
-【具体要求】从用户价值、开发成本、战略匹配度评分，并提供优先级排序
-【输出格式】PRD优先级表格 + 最小可行产品建议 + 风险预案`
-            }
+            { name: "商业顾问", template: `【角色设定】麦肯锡风格商业顾问\n【任务描述】帮助决策【战略选择A vs B】\n【背景信息】公司所处行业：【行业】，核心资源：【资源】，短期目标：【目标】\n【具体要求】运用MECE原则，从财务、市场、运营、风险四个维度评分，给出量化建议\n【输出格式】决策矩阵 + 利弊分析 + 实施路线图` },
+            { name: "人生规划师", template: `【角色设定】人生规划/职业规划导师\n【任务描述】帮助选择【职业方向/重大人生决策】\n【背景信息】用户性格：【INTP/外向】；技能树：【技能】；顾虑：【顾虑点】\n【具体要求】结合价值观、能力、市场趋势，提供短期行动清单和长期愿景\n【输出格式】决策框架（SWOT+价值观排序） + 分阶段执行建议` },
+            { name: "产品经理", template: `【角色设定】资深产品经理，擅长需求分析与产品决策\n【任务描述】决定【功能A还是功能B】优先开发\n【背景信息】用户反馈：【反馈摘要】；开发资源：【工时限制】；商业价值：【预期】\n【具体要求】从用户价值、开发成本、战略匹配度评分，并提供优先级排序\n【输出格式】PRD优先级表格 + 最小可行产品建议 + 风险预案` }
         ],
         "总结类": [
-            {
-                name: "学术总结专家",
-                template: `【角色设定】学术研究助理，擅长提炼论文核心
-【任务描述】总结【论文/研究报告】的核心贡献
-【背景信息】文章领域：【领域】，篇幅：【页数】
-【具体要求】提取研究问题、方法论、实验数据、结论与局限性，保留关键引用
-【输出格式】结构摘要（背景-方法-结果-讨论） + 3个takeaway`
-            },
-            {
-                name: "商务汇报顾问",
-                template: `【角色设定】顶级咨询公司汇报专家
-【任务描述】将【长文档/数据】浓缩成高管汇报版
-【背景信息】听众：【CEO/投资人】，关注点：【ROI/增长】
-【具体要求】金字塔原理，一页纸精华，包含关键图表描述与行动呼吁
-【输出格式】标题+核心洞察+数据支撑+下一步建议`
-            },
-            {
-                name: "阅读笔记助手",
-                template: `【角色设定】高效阅读教练
-【任务描述】总结【书籍/长文】的精华内容
-【背景信息】书籍类型：【商业/小说/科普】，读者目的：【获取知识/休闲】
-【具体要求】提炼核心框架、金句、实践清单，保留原文风味但简洁
-【输出格式】思维导图式要点 + 金句摘录 + 行动启发`
-            }
+            { name: "学术总结专家", template: `【角色设定】学术研究助理，擅长提炼论文核心\n【任务描述】总结【论文/研究报告】的核心贡献\n【背景信息】文章领域：【领域】，篇幅：【页数】\n【具体要求】提取研究问题、方法论、实验数据、结论与局限性，保留关键引用\n【输出格式】结构摘要（背景-方法-结果-讨论） + 3个takeaway` },
+            { name: "商务汇报顾问", template: `【角色设定】顶级咨询公司汇报专家\n【任务描述】将【长文档/数据】浓缩成高管汇报版\n【背景信息】听众：【CEO/投资人】，关注点：【ROI/增长】\n【具体要求】金字塔原理，一页纸精华，包含关键图表描述与行动呼吁\n【输出格式】标题+核心洞察+数据支撑+下一步建议` },
+            { name: "阅读笔记助手", template: `【角色设定】高效阅读教练\n【任务描述】总结【书籍/长文】的精华内容\n【背景信息】书籍类型：【商业/小说/科普】，读者目的：【获取知识/休闲】\n【具体要求】提炼核心框架、金句、实践清单，保留原文风味但简洁\n【输出格式】思维导图式要点 + 金句摘录 + 行动启发` }
         ]
     };
 
@@ -568,7 +501,6 @@
     const roleTemplatePreview = document.getElementById('roleTemplatePreview');
     const fillFromRoleBtn = document.getElementById('fillFromRoleBtn');
 
-    // 填充下拉框
     function populateTemplateTypes() {
         const types = Object.keys(roleDatabase);
         templateTypeSelect.innerHTML = '';
@@ -581,7 +513,6 @@
         if (types.length) templateTypeSelect.value = types[0];
     }
 
-    // 根据选中的模板类型更新角色下拉框
     function updateRoles() {
         const selectedType = templateTypeSelect.value;
         const roles = roleDatabase[selectedType] || [];
@@ -601,7 +532,6 @@
         }
     }
 
-    // 更新预览区
     function updatePreview() {
         const selectedType = templateTypeSelect.value;
         const selectedRoleName = roleSelect.value;
@@ -614,7 +544,6 @@
         }
     }
 
-    // 填充当前角色模板到上方表格
     function fillCurrentTemplateToTable() {
         const selectedType = templateTypeSelect.value;
         const selectedRoleName = roleSelect.value;
@@ -625,25 +554,18 @@
             return;
         }
         const template = role.template;
-        // 复用之前的映射填充逻辑
         fillFromTemplateString(template);
         showToast('✅ 已根据角色模板填充表格，请微调细节');
     }
 
-    // 通用填充函数：解析模板字符串并填入对应的输入框
+    // 修复：移除多余右括号，清理开头多余的】符号
     function fillFromTemplateString(templateText) {
-        // 映射规则: 标签 -> 目标元素
         const mapping = [
             { pattern: /【角色设定[：]?\s*(.*?)(?=\n【|$)/gi, target: document.getElementById('inputRole') },
-            { pattern: /【角色[：]?\s*(.*?)(?=\n【|$)/gi, target: document.getElementById('inputRole') },
             { pattern: /【任务描述[：]?\s*(.*?)(?=\n【|$)/gi, target: document.getElementById('inputTask') },
-            { pattern: /【任务[：]?\s*(.*?)(?=\n【|$)/gi, target: document.getElementById('inputTask') },
             { pattern: /【背景信息[：]?\s*(.*?)(?=\n【|$)/gi, target: document.getElementById('inputContext') },
-            { pattern: /【背景[：]?\s*(.*?)(?=\n【|$)/gi, target: document.getElementById('inputContext') },
             { pattern: /【具体要求[：]?\s*(.*?)(?=\n【|$)/gi, target: document.getElementById('inputSpec') },
-            { pattern: /【要求[：]?\s*(.*?)(?=\n【|$)/gi, target: document.getElementById('inputSpec') },
             { pattern: /【输出格式[：]?\s*(.*?)(?=\n【|$)/gi, target: document.getElementById('inputFormat') },
-            { pattern: /【格式[：]?\s*(.*?)(?=\n【|$)/gi, target: document.getElementById('inputFormat') },
             { pattern: /【参考示例[：]?\s*(.*?)(?=\n【|$)/gi, target: document.getElementById('inputExample') }
         ];
         for (let map of mapping) {
@@ -651,22 +573,23 @@
             const match = map.pattern.exec(templateText);
             if (match && match[1]) {
                 let val = match[1].trim();
+                // 清理开头多余的】符号（防止模板中出现如“】资深...”）
+                val = val.replace(/^】+/, '').trim();
                 if (val) map.target.value = val;
             }
         }
-        // 如果具体要求为空，尝试捕获其他标签（例如风格/字数等合并到具体要求）
+        // 备选：处理可能出现的【要求】标签（合并到具体要求）
         if (!document.getElementById('inputSpec').value.trim()) {
-            const extraSpecMatch = templateText.match(/【[^】]*?[要求风格关键点字数][^】]*?】\s*(.*?)(?=\n【|$)/gi);
+            const extraSpecMatch = templateText.match(/【要求[：]?\s*(.*?)(?=\n【|$)/gi);
             if (extraSpecMatch && extraSpecMatch[0]) {
                 let spec = extraSpecMatch.map(s => s.replace(/【.*?】/, '').trim()).join('；');
                 if (spec) document.getElementById('inputSpec').value = spec;
             }
         }
-        // 触发实时预览更新（生成区域）
         if (typeof updateResult === 'function') updateResult();
     }
 
-    // ---- 以下为原有生成&复制逻辑 ----
+    // ---- 生成逻辑（包含原则追加）----
     const roleInput = document.getElementById('inputRole');
     const taskInput = document.getElementById('inputTask');
     const contextInput = document.getElementById('inputContext');
@@ -677,6 +600,8 @@
     const copyBtn = document.getElementById('copyBtn');
     const clearBtn = document.getElementById('clearAllBtn');
     const resultDiv = document.getElementById('resultPrompt');
+    const humanizeCheckbox = document.getElementById('humanizeCheckbox');
+    const truthCheckbox = document.getElementById('truthCheckbox');
 
     function showToast(msg) {
         const toast = document.getElementById('toast');
@@ -700,7 +625,20 @@
         if (example) parts.push(`【参考示例】${example}`);
         if (format) parts.push(`【输出格式】${format}`);
         if (parts.length === 0) return "⚠️ 请至少填写一项「您的输入」，以便生成精准指令。";
-        return parts.join('\n\n');
+        
+        let prompt = parts.join('\n\n');
+        
+        let extra = [];
+        if (humanizeCheckbox.checked) {
+            extra.push("【回答风格要求】请以自然、口语化的方式表达，避免机械模板和官腔套话。使用第一人称视角，穿插生活化案例或个人见解，让回答读起来像一位资深专家在面对面交流。杜绝“作为AI模型”之类的自述，力求去AI化。");
+        }
+        if (truthCheckbox.checked) {
+            extra.push("【真实性要求】请严格基于可靠事实或公认知识，对于不确定的信息要明确说明“尚无定论”或“据某来源”。禁止编造数据、案例或引用不存在的文献。回答中区分事实陈述与观点推测，确保内容可验证。");
+        }
+        if (extra.length) {
+            prompt += "\n\n" + extra.join("\n\n");
+        }
+        return prompt;
     }
 
     function updateResult() {
@@ -727,23 +665,24 @@
         specInput.value = '';
         exampleInput.value = '';
         formatInput.value = '';
+        humanizeCheckbox.checked = false;
+        truthCheckbox.checked = false;
         updateResult();
-        showToast("已清空所有输入");
+        showToast("已清空所有输入及原则选项");
     }
 
     // 事件绑定
     generateBtn.addEventListener('click', updateResult);
     copyBtn.addEventListener('click', copyToClipboard);
     clearBtn.addEventListener('click', clearAllInputs);
-    templateTypeSelect.addEventListener('change', () => {
-        updateRoles();
-    });
+    templateTypeSelect.addEventListener('change', () => { updateRoles(); });
     roleSelect.addEventListener('change', updatePreview);
     fillFromRoleBtn.addEventListener('click', fillCurrentTemplateToTable);
     
-    // 输入实时预览
     const allInputs = [roleInput, taskInput, contextInput, specInput, exampleInput, formatInput];
     allInputs.forEach(inp => inp.addEventListener('input', updateResult));
+    humanizeCheckbox.addEventListener('change', updateResult);
+    truthCheckbox.addEventListener('change', updateResult);
 
     // 初始化
     populateTemplateTypes();
